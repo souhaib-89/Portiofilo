@@ -176,7 +176,7 @@
       state.updatedAt = r.updatedAt || Date.now();
       state.starter = false;
       try { localStorage.setItem(LAST, JSON.stringify({ updatedAt: state.updatedAt, projects: state.projects })); } catch (e) { /* fine without it */ }
-      toast(okMessage + ' The site updates within a minute.');
+      toast(okMessage + ' Visitors see it within 5 minutes.');
       return true;
     } catch (e) {
       if (e.status === 401) { toast('You were signed out. Sign in and try again.', true); show('viewLogin'); }

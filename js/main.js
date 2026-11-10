@@ -627,7 +627,13 @@
     if (location.protocol === 'file:' || !window.fetch || window.PF_STATIC) return Promise.resolve(builtin);   // no server to ask
     const ctl = window.AbortController ? new AbortController() : null;
     const timer = setTimeout(() => ctl && ctl.abort(), 3500);
-    return fetch('/api/projects', { signal: ctl ? ctl.signal : undefined, headers: { Accept: 'application/json' } })
+    // right after a save in the dashboard, this browser skips the 5-minute cache so the owner sees the change at once
+    let stamp = '';
+    try {
+      const last = JSON.parse(localStorage.getItem('pf-admin-last') || 'null');
+      if (last && Date.now() - last.updatedAt < 15 * 60 * 1000) stamp = `?t=${last.updatedAt}`;
+    } catch (e) { /* no storage: use the cached list */ }
+    return fetch('/api/projects' + stamp, { signal: ctl ? ctl.signal : undefined, headers: { Accept: 'application/json' } })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => (d && Array.isArray(d.projects) ? normalizeProjects(d.projects) : builtin))
       .catch(() => builtin)

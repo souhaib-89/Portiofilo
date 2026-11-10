@@ -4,7 +4,7 @@ A single-page portfolio (plain HTML, CSS and JavaScript, no build step) with a s
 
 ## The dashboard
 
-Open `/admin` on the deployed site and sign in. From there you can add, edit, reorder and delete projects, upload a cover and extra images, and add links. Every change is saved straight away and shows on the site within about a minute.
+Open `/admin` on the deployed site and sign in. From there you can add, edit, reorder and delete projects, upload a cover and extra images, and add links. Every change is saved straight away. You see it on the site immediately in the same browser; visitors see it within 5 minutes.
 
 Each project has a details view on the site. Its address is `/#project-<name>`, so you can link to a project directly.
 

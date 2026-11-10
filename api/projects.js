@@ -5,7 +5,7 @@
    `projects` is null until the dashboard has saved once; the site then shows the
    starter projects from js/content.js. */
 
-const { send, readJson, route, httpError } = require('./_lib/http');
+const { send, query, readJson, route, httpError } = require('./_lib/http');
 const auth = require('./_lib/auth');
 const store = require('./_lib/store');
 const validate = require('./_lib/validate');
@@ -13,8 +13,11 @@ const validate = require('./_lib/validate');
 module.exports = route({
   async GET(req, res) {
     const data = store.configured() ? await store.read() : null;
-    // visitors may get a copy up to a minute old; the dashboard always reads fresh
-    const cache = auth.isAuthed(req) ? 'private, no-store' : 'public, max-age=0, s-maxage=60';
+    // Visitors get a copy up to 5 minutes old. That caps storage reads at 288 a day, which keeps
+    // the site inside Vercel Blob's free allowance (10,000 reads a month) whatever the traffic.
+    // A request with ?t=… (the dashboard, and the owner's own browser after a save) is always fresh.
+    const fresh = auth.isAuthed(req) && query(req).has('t');
+    const cache = fresh ? 'private, no-store' : 'public, max-age=0, s-maxage=300';
     send(res, 200, {
       projects: data ? data.projects : null,
       updatedAt: data ? data.updatedAt : null
