@@ -164,44 +164,51 @@ window.PORTFOLIO = {
     label: "Selected work",
     title: "Explore a few projects *I'm proud of*",
     sub: "Five products across SaaS, e-commerce, legal services and learning. Open a card to see the details.",
-    filterBy: "year",                                          // which project field the filter buttons match: "year" or "category"
-    filters: ["2026", "2025", "2024"],                         // an "All" button is added automatically
+    filterBy: "year",                                          // the filter buttons are built from this project field: "year" or "category"
     moreLabel: "See more on Behance",
     moreUrl: "https://www.behance.net/sahibabdel-aal",
+    /* Starter projects. Once you save anything in the dashboard (/admin), the site shows the
+       dashboard's list instead and this one is only a fallback.
+       body = the details view: a blank line starts a paragraph, lines starting with "- " become bullets. */
     projects: [                                                // images are PLACEHOLDERS: replace each with a real screenshot (16:10)
       {
         title: "Ghzeer SaaS Platform", category: "SaaS platform", year: "2024", role: "Product Designer",
         text: "SaaS dashboards and workflows tailored for organizational users, refined through user feedback, testing sessions and iterative design.",
         tags: ["SaaS", "Dashboards", "Usability testing"],
-        image: "assets/projects/ghzeer.svg",
+        body: "- Designed SaaS dashboards and workflows tailored for organizational users.\n- Improved usability through user feedback, testing sessions and iterative design.\n- Created responsive interfaces aligned with business goals and user needs.\n- Worked closely with developers to ensure seamless implementation and consistency.",
+        image: "assets/projects/ghzeer.svg", gallery: [],
         links: [{ label: "View in Figma", url: "https://www.figma.com/design/LbtwSq2EzS3q9vM56EOq24/Ghzeer-UI-UX---English-Version?node-id=0-1&t=SjFVBvIhSAaxrkdl-1" }]
       },
       {
         title: "Bazar E-Commerce Platform", category: "E-commerce", year: "2025", role: "Product Designer",
         text: "Buying and selling experiences for new and used products, built on market and user research for the Syrian e-commerce market.",
         tags: ["E-commerce", "User research", "Payment flows"],
-        image: "assets/projects/bazar.svg",
+        body: "- Conducted market and user research for the Syrian e-commerce market.\n- Designed intuitive buying and selling experiences for new and used products.\n- Improved trust and usability through testing and user feedback analysis.\n- Collaborated with developers on payment, delivery and product management flows.",
+        image: "assets/projects/bazar.svg", gallery: [],
         links: [{ label: "View case study", url: "https://www.behance.net/gallery/232197811/Bazar-%28-Mart-Application-%29" }]
       },
       {
         title: "Mohameek Legal Platform", category: "Legal services", year: "2025", role: "Product Designer",
         text: "Accessible legal service interfaces for consultations and appointments that turn complex legal workflows into simple steps.",
         tags: ["Legal services", "Accessibility", "Usability testing"],
-        image: "assets/projects/mohameek.svg",
+        body: "- Designed accessible legal service interfaces for consultations and appointments.\n- Simplified complex legal workflows into user-friendly digital experiences.\n- Conducted usability testing and optimized interfaces based on user insights.\n- Worked with developers to maintain consistency between functionality and UI design.",
+        image: "assets/projects/mohameek.svg", gallery: [],
         links: [{ label: "View case study", url: "https://www.behance.net/gallery/249311661/Mohamek-Lawyer-UI-UX-Case-Study-%28Website%29" }]
       },
       {
         title: "Umami SA", category: "Learning platform", year: "2026", role: "UI/UX Designer",
         text: "Interactive learning interfaces that simplify complex educational content into engaging, easy-to-use experiences.",
         tags: ["Learning", "Interaction design", "Accessibility"],
-        image: "assets/projects/umami.svg",
+        body: "- Designing interactive learning interfaces that simplify complex educational content into engaging, easy-to-use experiences.\n- Improving UX based on research and usability testing to increase engagement and accessibility.",
+        image: "assets/projects/umami.svg", gallery: [],
         links: [{ label: "View in Figma", url: "https://www.figma.com/design/9PY0mewnEXPJYC3IemWwdz/UMAMI-SA?node-id=0-1&t=4lEl8ZFtG0zRZoT1-1" }]
       },
       {
         title: "Riwaq Website", category: "Website", year: "2026", role: "UI/UX Designer",
         text: "Website interfaces that improve content discovery, with clearer user journeys, information architecture and visual hierarchy across devices.",
         tags: ["Website", "Information architecture", "Responsive"],
-        image: "assets/projects/riwaq.svg",
+        body: "- Designing intuitive and engaging website interfaces that enhance content discovery and provide a seamless user experience across devices.\n- Improving user journeys, information architecture and visual hierarchy to make navigation easier and help users access relevant content efficiently.",
+        image: "assets/projects/riwaq.svg", gallery: [],
         links: [{ label: "View case study", url: "https://www.behance.net/gallery/247832609/Riwaq-UI-UX-Case-Study-(Website)" }]
       }
     ]

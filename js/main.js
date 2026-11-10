@@ -140,28 +140,6 @@
     $('#steps').innerHTML = ((C.process || {}).steps || []).map((s, i) =>
       `<button class="step" type="button" role="tab" aria-selected="false" data-i="${i}" aria-label="Step ${i + 1}: ${esc(s.title)}"><span class="step__w">Step </span>${pad(i + 1)}</button>`).join('');
 
-    /* work */
-    const W = C.work || {};
-    const P = W.projects || [];
-    $('#filters').insertAdjacentHTML('beforeend', ['All'].concat(W.filters || []).map((f, i) =>
-      `<button class="pill" type="button" data-filter="${i ? esc(f) : ''}" aria-pressed="${!i}">${esc(f)}</button>`).join(''));
-    const acc = $('#acc');
-    acc.style.setProperty('--n', Math.max(1, P.length));
-    acc.innerHTML = P.map((p, i) => `
-      <article class="acc__item${i === 0 ? ' is-active' : ''}" data-cat="${esc(p[W.filterBy || 'category'])}" tabindex="0" aria-label="${esc(p.title)}">
-        <img class="acc__img" src="${esc(p.image)}" alt="" decoding="async">
-        <div class="acc__shade"></div>
-        <div class="acc__spine" aria-hidden="true"><span class="acc__num">${pad(i + 1)}</span><span class="acc__vt">${esc(p.title)}</span></div>
-        <div class="acc__body">
-          <p class="acc__meta">${[`${pad(i + 1)} / ${pad(P.length)}`, p.category, p.year, p.role].filter(Boolean).map(esc).join(' · ')}</p>
-          <h3 class="acc__title">${esc(p.title)}</h3>
-          <p class="acc__desc">${esc(p.text)}</p>
-          <ul class="chips">${(p.tags || []).map((t) => `<li class="chip">${esc(t)}</li>`).join('')}</ul>
-          <div class="acc__links">${(p.links || []).map((l, k) => link(l.url, `btn btn--${k ? 'onimg' : 'accent'} btn--sm`, `<span>${esc(l.label)}</span>${k ? '' : icon('ur')}`)).join('')}</div>
-        </div>
-      </article>`).join('');
-    $('#workMore').innerHTML = link(W.moreUrl, 'lnk', `${esc(W.moreLabel || 'More work')} ${icon('ur')}`);
-
     /* experience */
     $('#xpList').innerHTML = ((C.experience || {}).items || []).map((x, i) => `
       <li data-reveal><div class="xp__row${i === 0 ? ' is-open' : ''}">
@@ -620,7 +598,77 @@
     if (!reduce) new IntersectionObserver(([e]) => box.classList.toggle('is-live', e.isIntersecting), { threshold: .35 }).observe(box);
   }
 
-  /* ================================================================== work */
+  /* ============================================================== projects */
+  /* The list comes from the dashboard (GET /api/projects). If that is unavailable,
+     or nothing has been saved there yet, the starter projects in content.js are used. */
+  let PROJECTS = [];
+  const slugify = (v) => String(v || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+  const safeUrl = (u) => (/^(https?:\/\/|mailto:)/i.test(u || '') ? u : '');
+  const safeImg = (u) => (/^(https?:\/\/|\/?assets\/|\/_store\/)/i.test(u || '') ? u : '');
+
+  function normalizeProjects(list) {
+    const used = new Set();
+    return (Array.isArray(list) ? list : []).filter((x) => x && x.title).map((x) => {
+      const base = slugify(x.id || x.title) || 'project';
+      let id = base, n = 2;
+      while (used.has(id)) id = `${base}-${n++}`;
+      used.add(id);
+      return {
+        id, title: String(x.title), category: x.category || '', year: String(x.year || ''), role: x.role || '',
+        text: x.text || '', body: x.body || '', tags: Array.isArray(x.tags) ? x.tags : [],
+        image: safeImg(x.image), gallery: (Array.isArray(x.gallery) ? x.gallery : []).map(safeImg).filter(Boolean),
+        links: (Array.isArray(x.links) ? x.links : []).filter((l) => l && l.label && safeUrl(l.url))
+      };
+    });
+  }
+
+  function loadProjects() {
+    const builtin = normalizeProjects((C.work || {}).projects);
+    if (location.protocol === 'file:' || !window.fetch || window.PF_STATIC) return Promise.resolve(builtin);   // no server to ask
+    const ctl = window.AbortController ? new AbortController() : null;
+    const timer = setTimeout(() => ctl && ctl.abort(), 3500);
+    return fetch('/api/projects', { signal: ctl ? ctl.signal : undefined, headers: { Accept: 'application/json' } })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => (d && Array.isArray(d.projects) ? normalizeProjects(d.projects) : builtin))
+      .catch(() => builtin)
+      .finally(() => clearTimeout(timer));
+  }
+
+  function renderWork() {
+    const W = C.work || {}, P = PROJECTS, by = W.filterBy || 'year';
+    let filters = W.filters;
+    if (!Array.isArray(filters)) {
+      filters = Array.from(new Set(P.map((x) => x[by]).filter(Boolean)));
+      if (by === 'year') filters.sort((x, y) => y.localeCompare(x, undefined, { numeric: true }));
+    }
+    const fbox = $('#filters');
+    $$('.pill', fbox).forEach((x) => x.remove());
+    fbox.hidden = filters.length < 2;
+    fbox.insertAdjacentHTML('beforeend', ['All'].concat(filters).map((f, i) =>
+      `<button class="pill" type="button" data-filter="${i ? esc(f) : ''}" aria-pressed="${!i}">${esc(f)}</button>`).join(''));
+
+    const acc = $('#acc');
+    acc.style.setProperty('--n', Math.max(1, P.length));
+    acc.classList.toggle('is-empty', !P.length);
+    acc.innerHTML = P.length ? P.map((x, i) => `
+      <article class="acc__item${i === 0 ? ' is-active' : ''}" data-cat="${esc(x[by])}" tabindex="0" aria-label="${esc(x.title)}">
+        ${x.image ? `<img class="acc__img" src="${esc(x.image)}" alt="" decoding="async">` : '<div class="acc__img acc__img--none"></div>'}
+        <div class="acc__shade"></div>
+        <div class="acc__spine" aria-hidden="true"><span class="acc__num">${pad(i + 1)}</span><span class="acc__vt">${esc(x.title)}</span></div>
+        <div class="acc__body">
+          <p class="acc__meta">${[`${pad(i + 1)} / ${pad(P.length)}`, x.category, x.year, x.role].filter(Boolean).map(esc).join(' · ')}</p>
+          <h3 class="acc__title">${esc(x.title)}</h3>
+          <p class="acc__desc">${esc(x.text)}</p>
+          <ul class="chips">${x.tags.slice(0, 4).map((t) => `<li class="chip">${esc(t)}</li>`).join('')}</ul>
+          <div class="acc__links">
+            <a class="btn btn--accent btn--sm" href="#project-${esc(x.id)}"><span>Read details</span>${icon('ur')}</a>
+            ${x.links.slice(0, 1).map((l) => link(safeUrl(l.url), 'btn btn--onimg btn--sm', `<span>${esc(l.label)}</span>`)).join('')}
+          </div>
+        </div>
+      </article>`).join('') : '<p class="acc__empty">New projects are on their way.</p>';
+    $('#workMore').innerHTML = link(W.moreUrl, 'lnk', `${esc(W.moreLabel || 'More work')} ${icon('ur')}`);
+  }
+
   function initWork() {
     const acc = $('#acc'), filters = $('#filters'); if (!acc) return;
     const items = $$('.acc__item', acc);
@@ -646,7 +694,7 @@
       const b = e.target.closest('.pill'); if (!b) return;
       const f = b.dataset.filter;
       track.set(b);
-      $$('.pill', filters).forEach((p) => p.setAttribute('aria-pressed', String(p === b)));
+      $$('.pill', filters).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
       acc.classList.add('is-switching');
       clearTimeout(busy);
       busy = setTimeout(() => {
@@ -657,6 +705,111 @@
         acc.classList.remove('is-switching');
       }, reduce ? 0 : 300);
     });
+  }
+
+  /* ======================================================= project details */
+  /* A sheet that slides up over the page. Its address is #project-<id>, so a
+     project can be linked to directly and the Back button closes it. */
+  const sheet = $('#sheet');
+  let sheetOpen = false, sheetPushed = false, sheetFocus = null;
+
+  /* plain text -> paragraphs; lines starting with "- " become a bullet list */
+  function rich(text) {
+    const out = [];
+    String(text || '').replace(/\r\n?/g, '\n').split(/\n\s*\n/).forEach((block) => {
+      let bullets = [], para = [];
+      const flush = () => {
+        if (bullets.length) out.push(`<ul class="ticks">${bullets.map((l) => `<li>${icon('spark')}<span>${esc(l)}</span></li>`).join('')}</ul>`);
+        if (para.length) out.push(`<p>${para.map(esc).join('<br>')}</p>`);
+        bullets = []; para = [];
+      };
+      block.split('\n').map((l) => l.trim()).filter(Boolean).forEach((l) => {
+        const m = /^[-•*]\s+(.*)$/.exec(l);
+        if (m) { if (para.length) flush(); bullets.push(m[1]); }
+        else { if (bullets.length) flush(); para.push(l); }
+      });
+      flush();
+    });
+    return out.join('');
+  }
+
+  function fillSheet(x) {
+    const i = PROJECTS.indexOf(x), n = PROJECTS.length;
+    const prev = PROJECTS[(i - 1 + n) % n], next = PROJECTS[(i + 1) % n];
+    $('#sheetCount').textContent = `Project ${pad(i + 1)} / ${pad(n)}`;
+    $('#sheetBody').innerHTML = `
+      <header class="sheet__head">
+        <p class="label">${icon('spark')}<span>${[x.category, x.year, x.role].filter(Boolean).map(esc).join(' · ')}</span></p>
+        <h2 class="sheet__title" id="sheetTitle">${esc(x.title)}</h2>
+        ${x.text ? `<p class="sheet__lead">${esc(x.text)}</p>` : ''}
+        ${x.tags.length ? `<ul class="chips">${x.tags.map((t) => `<li class="chip">${esc(t)}</li>`).join('')}</ul>` : ''}
+        ${x.links.length ? `<div class="sheet__links">${x.links.map((l, k) => link(safeUrl(l.url), `btn btn--${k ? 'ghost' : 'accent'}`, `<span>${esc(l.label)}</span>${icon('ur')}`)).join('')}</div>` : ''}
+      </header>
+      ${x.image ? `<figure class="sheet__cover"><img src="${esc(x.image)}" alt="${esc(x.title)}"></figure>` : ''}
+      ${x.body ? `<section class="sheet__text"><h3 class="minilabel">What I did</h3>${rich(x.body)}</section>` : ''}
+      ${x.gallery.length ? `<div class="sheet__gallery">${x.gallery.map((u, k) => `<figure><img src="${esc(u)}" alt="${esc(x.title)}, screen ${k + 1}" loading="lazy"></figure>`).join('')}</div>` : ''}
+      ${n > 1 ? `<nav class="sheet__nav" aria-label="More projects">
+        <a class="sheet__go" href="#project-${esc(prev.id)}" data-go="${esc(prev.id)}"><small>Previous</small><b>${esc(prev.title)}</b></a>
+        <a class="sheet__go" href="#project-${esc(next.id)}" data-go="${esc(next.id)}"><small>Next</small><b>${esc(next.title)}</b></a>
+      </nav>` : ''}`;
+    $('#sheetPanel').scrollTop = 0;
+  }
+
+  function showSheet(x) {
+    fillSheet(x);
+    if (sheetOpen) return;
+    sheetOpen = true;
+    sheetFocus = document.activeElement;
+    sheet.inert = false;
+    sheet.classList.add('is-open');
+    $$('#hdr, #main, .ftr, #accent').forEach((el) => { el.inert = true; });
+    if (lenis) lenis.stop(); else root.style.overflow = 'hidden';
+    $('#sheetClose').focus({ preventScroll: true });
+  }
+
+  function hideSheet() {
+    if (!sheetOpen) return;
+    sheetOpen = false; sheetPushed = false;
+    sheet.classList.remove('is-open');
+    sheet.inert = true;
+    $$('#hdr, #main, .ftr, #accent').forEach((el) => { el.inert = false; });
+    if (lenis) lenis.start(); else root.style.overflow = '';
+    if (sheetFocus && sheetFocus.focus) sheetFocus.focus({ preventScroll: true });
+  }
+
+  /* make the sheet match the address bar */
+  function syncSheet(viaNavigation) {
+    const m = /^#project-(.+)$/.exec(location.hash);
+    let id = m ? m[1] : '';
+    try { id = decodeURIComponent(id); } catch (e) { /* keep as is */ }
+    const x = id && PROJECTS.find((q) => q.id === id);
+    if (x) { if (!sheetOpen) sheetPushed = !!viaNavigation; showSheet(x); }
+    else hideSheet();
+  }
+
+  function dismissSheet() {
+    if (!sheetOpen) return;
+    const force = () => {
+      try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* sandboxed frame */ }
+      hideSheet();
+    };
+    if (sheetPushed) { history.back(); setTimeout(() => { if (sheetOpen) force(); }, 300); }
+    else force();
+  }
+
+  function initSheet() {
+    if (!sheet) return;
+    addEventListener('hashchange', () => syncSheet(true));
+    sheet.addEventListener('click', (e) => {
+      if (e.target.closest('[data-sheet-close]')) { dismissSheet(); return; }
+      const go = e.target.closest('[data-go]');
+      if (go) { e.preventDefault(); location.replace(`#project-${go.dataset.go}`); }   // swap, so Back still closes
+    });
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href^="#project-"]');
+      if (a && !a.dataset.go && a.getAttribute('href') === location.hash) { e.preventDefault(); syncSheet(false); }
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') dismissSheet(); });
   }
 
   /* ============================================================ experience */
@@ -910,7 +1063,14 @@
   initAbout();
   initStack();
   initServices();
-  initWork();
+  initSheet();
+  loadProjects().then((list) => {
+    PROJECTS = list;
+    renderWork();
+    initWork();
+    syncSheet(false);        // opens the right project when the page was loaded from a #project-… link
+    refresh();
+  });
   initExperience();
   initContact();
   initFooter();

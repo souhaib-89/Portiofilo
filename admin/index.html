@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Dashboard | Souhaib Abdulaal</title>
+<meta name="theme-color" content="#0e0e0d">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Unbounded:wght@400..900&display=swap">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<svg class="sprite" aria-hidden="true" width="0" height="0" focusable="false">
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 14 6-6 6 6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 10 6 6 6-6"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="m14 6-6 6 6 6"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="m10 6 6 6-6 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><circle cx="8.5" cy="10" r="1.6"/><path d="m4 17 5-4.5 3.5 3 3-2.5L20 16.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+</svg>
+
+<!-- ============================ loading ============================ -->
+<div class="center" id="viewLoading"><p class="muted">Loading the dashboard…</p></div>
+
+<!-- ============================= setup ============================= -->
+<section class="center" id="viewSetup" hidden>
+  <div class="card card--wide">
+    <p class="eyebrow">One-time setup</p>
+    <h1 class="h1">Connect the dashboard</h1>
+    <p class="muted">Two things have to be switched on in your Vercel project before you can sign in. Menu names in Vercel may differ slightly from the ones below.</p>
+    <ol class="steps">
+      <li id="stepStorage">
+        <span class="steps__state" aria-hidden="true"></span>
+        <div>
+          <h2>Storage for projects and images</h2>
+          <p>In Vercel, open this project, go to <b>Storage</b>, create a <b>Blob</b> store with <b>Public</b> access and connect it to the project.</p>
+        </div>
+      </li>
+      <li id="stepPassword">
+        <span class="steps__state" aria-hidden="true"></span>
+        <div>
+          <h2>A password for this dashboard</h2>
+          <p>In <b>Settings → Environment Variables</b>, add a variable named <code>ADMIN_PASSWORD</code>. Its value is the password you will type here. Make it long.</p>
+        </div>
+      </li>
+      <li>
+        <span class="steps__num" aria-hidden="true">3</span>
+        <div>
+          <h2>Redeploy</h2>
+          <p>In <b>Deployments</b>, open the menu on the latest deployment and choose <b>Redeploy</b>. New settings only apply to a new deployment.</p>
+        </div>
+      </li>
+    </ol>
+    <div class="card__end"><button class="btn btn--accent" id="setupRetry" type="button">Check again</button><a class="btn btn--ghost" href="/">Back to the site</a></div>
+  </div>
+</section>
+
+<!-- ============================= login ============================= -->
+<section class="center" id="viewLogin" hidden>
+  <form class="card" id="loginForm" novalidate>
+    <p class="logo">Souhaib<i></i></p>
+    <h1 class="h1">Dashboard</h1>
+    <p class="muted">Sign in to manage the projects on your site.</p>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+    </div>
+    <p class="error" id="loginError" role="alert"></p>
+    <button class="btn btn--accent btn--block" id="loginBtn" type="submit">Sign in</button>
+    <a class="back" href="/">Back to the site</a>
+  </form>
+</section>
+
+<!-- ============================== app ============================== -->
+<div id="viewApp" hidden>
+  <header class="top">
+    <div class="wrap top__in">
+      <p class="logo">Souhaib<i></i><span>Dashboard</span></p>
+      <div class="top__act">
+        <a class="btn btn--ghost btn--sm" href="/" target="_blank" rel="noopener"><span>View site</span><svg class="i" aria-hidden="true"><use href="#i-ur"/></svg></a>
+        <button class="btn btn--ghost btn--sm" id="logoutBtn" type="button">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap main">
+    <div class="head">
+      <div>
+        <h1 class="h1">Projects</h1>
+        <p class="muted" id="summary"></p>
+      </div>
+      <button class="btn btn--accent" id="addBtn" type="button"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg><span>Add project</span></button>
+    </div>
+
+    <p class="note" id="starterNote" hidden>These are the starter projects that ship with the site. The first change you save stores the list here, and the site reads it from the dashboard from then on.</p>
+
+    <ol class="list" id="list"></ol>
+    <div class="empty" id="empty" hidden>
+      <p>No projects yet.</p>
+      <p class="muted">Add your first one and it will appear in the Work section of the site.</p>
+    </div>
+  </main>
+</div>
+
+<!-- ============================= editor ============================ -->
+<div class="drawer" id="drawer" inert>
+  <div class="drawer__scrim" data-close></div>
+  <form class="drawer__panel" id="form" novalidate aria-labelledby="formTitle">
+    <header class="drawer__top">
+      <h2 id="formTitle">Add project</h2>
+      <button class="iconbtn" type="button" data-close aria-label="Close without saving"><svg class="i" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </header>
+
+    <div class="drawer__body">
+      <div class="field">
+        <label for="f-title">Title</label>
+        <input id="f-title" type="text" maxlength="120" required autocomplete="off">
+      </div>
+
+      <div class="grid3">
+        <div class="field"><label for="f-year">Year</label><input id="f-year" type="text" inputmode="numeric" maxlength="12" placeholder="2026" autocomplete="off"></div>
+        <div class="field"><label for="f-category">Category</label><input id="f-category" type="text" maxlength="60" placeholder="SaaS platform" autocomplete="off"></div>
+        <div class="field"><label for="f-role">Your role</label><input id="f-role" type="text" maxlength="60" placeholder="Product Designer" autocomplete="off"></div>
+      </div>
+
+      <div class="field">
+        <label for="f-text">Short summary <small>shown on the project card</small></label>
+        <textarea id="f-text" rows="3" maxlength="400"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="f-body">Details <small>shown when a visitor opens the project</small></label>
+        <textarea id="f-body" rows="8" maxlength="8000"></textarea>
+        <p class="hint">Leave a blank line to start a new paragraph. Start a line with “- ” to make a bullet point.</p>
+      </div>
+
+      <div class="field">
+        <label for="f-tags">Tags <small>separate with commas</small></label>
+        <input id="f-tags" type="text" placeholder="SaaS, Dashboards, Usability testing" autocomplete="off">
+      </div>
+
+      <fieldset class="group">
+        <legend>Cover image</legend>
+        <div class="cover" id="cover"></div>
+        <input class="sr" id="f-cover" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" tabindex="-1">
+        <p class="hint">A wide image works best (16:10, for example 1600 × 1000). Large images are resized before upload.</p>
+      </fieldset>
+
+      <fieldset class="group">
+        <legend>More images <small>shown in the project details, in this order</small></legend>
+        <div class="gallery" id="gallery"></div>
+        <input class="sr" id="f-gallery" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" multiple tabindex="-1">
+      </fieldset>
+
+      <fieldset class="group">
+        <legend>Links <small>Figma file, Behance case study, live site…</small></legend>
+        <div class="links" id="links"></div>
+        <button class="btn btn--ghost btn--sm" id="addLink" type="button"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg><span>Add link</span></button>
+      </fieldset>
+    </div>
+
+    <footer class="drawer__end">
+      <p class="error" id="formError" role="alert"></p>
+      <button class="btn btn--ghost" type="button" data-close>Cancel</button>
+      <button class="btn btn--accent" id="saveBtn" type="submit">Save project</button>
+    </footer>
+  </form>
+</div>
+
+<p class="toast" id="toast" role="status" aria-live="polite"></p>
+
+<script src="/js/content.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>
