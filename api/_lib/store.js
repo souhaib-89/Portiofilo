@@ -12,7 +12,8 @@ const path = require('path');
 
 const DATA_PATH = 'data/projects.json';
 const localDir = () => process.env.PF_LOCAL_STORE || '';
-const useBlob = () => !!process.env.BLOB_READ_WRITE_TOKEN;
+// a connected Blob store gives the project either a read-write token or a store id (token-less sign-in)
+const useBlob = () => !!(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
 const configured = () => useBlob() || !!localDir();
 
 let sdk;

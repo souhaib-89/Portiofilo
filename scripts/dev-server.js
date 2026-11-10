@@ -11,7 +11,7 @@ const path = require('path');
 const root = path.resolve(__dirname, '..');
 const port = Number(process.argv[2]) || 3000;
 
-if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.PF_LOCAL_STORE) process.env.PF_LOCAL_STORE = path.join(root, '.data');
+if (!process.env.BLOB_READ_WRITE_TOKEN && !process.env.BLOB_STORE_ID && !process.env.PF_LOCAL_STORE) process.env.PF_LOCAL_STORE = path.join(root, '.data');
 if (!process.env.ADMIN_PASSWORD) {
   console.log('ADMIN_PASSWORD is not set: the dashboard will show its setup screen.');
 }
