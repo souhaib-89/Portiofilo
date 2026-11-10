@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Souhaib Abdulaal | Product Designer</title>
+<meta name="description" content="Souhaib Abdulaal Ali is a product designer in Cairo focused on SaaS and system-driven experiences. Case studies, services, experience and contact.">
+<meta name="theme-color" content="#0e0e0d">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Unbounded:wght@400..900&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!--page-->
+<script>
+/* runs before first paint: restore the saved colour mode and arm the intro animation */
+(function () {
+  var r = document.documentElement, m = null;
+  try { m = localStorage.getItem('pf-mode'); } catch (e) {}
+  if (m !== 'light' && m !== 'dark') m = r.getAttribute('data-theme');   /* set by some hosts when the page is embedded */
+  r.setAttribute('data-mode', m === 'light' ? 'light' : 'dark');
+  r.classList.add('js');
+  if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) r.classList.add('pre');
+})();
+</script>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- icon sprite -->
+<svg class="sprite" aria-hidden="true" width="0" height="0" focusable="false">
+  <symbol id="i-spark" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 0c.8 7.2 4.8 11.2 12 12-7.2.8-11.2 4.8-12 12-.8-7.2-4.8-11.2-12-12 7.2-.8 11.2-4.8 12-12z"/></symbol>
+  <symbol id="i-ur" viewBox="0 0 24 24"><path d="M7 17 17 7M8.5 7H17v8.5"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M2.5 12h2M19.5 12h2M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.2 8.2 0 1 0 10.2 10.2z"/></symbol>
+  <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 2-.8 2-1.9 0-.6-.3-1-.6-1.4-.3-.4-.5-.8-.5-1.2 0-.9.7-1.5 1.6-1.5H17a4 4 0 0 0 4-4c0-4.4-4-8-9-8z"/><circle cx="7.6" cy="12" r=".9" fill="currentColor"/><circle cx="9.8" cy="7.8" r=".9" fill="currentColor"/><circle cx="14.6" cy="7.4" r=".9" fill="currentColor"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.6A7 7 0 0 0 5 9.4C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+</svg>
+
+<canvas class="sky" id="sky" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
+<div class="cur" id="cur" aria-hidden="true"><span></span></div>
+
+<!-- ============================== header ============================== -->
+<header class="hdr" id="hdr">
+  <div class="wrap hdr__in">
+    <a class="logo" href="#home" aria-label="Back to top"><span data-t="meta.name"></span><i class="logo__dot"></i></a>
+    <p class="hello" id="hello" aria-label="Hello"><i aria-hidden="true"></i><span class="hello__w" aria-hidden="true"><span id="helloWord">Hello</span></span></p>
+    <nav class="nav pilltrack" id="nav" aria-label="Main"><span class="pillind" aria-hidden="true"></span></nav>
+    <div class="hdr__act">
+      <button class="iconbtn" id="modeBtn" type="button" aria-label="Switch to light mode">
+        <svg class="i i-sun" aria-hidden="true"><use href="#i-sun"/></svg>
+        <svg class="i i-moon" aria-hidden="true"><use href="#i-moon"/></svg>
+      </button>
+      <a class="btn btn--accent btn--sm hdr__cta" id="hdrCta" href="#contact"><span>Let's talk</span><svg class="i" aria-hidden="true"><use href="#i-ur"/></svg></a>
+      <button class="burger" id="burger" type="button" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><i></i><i></i></button>
+    </div>
+  </div>
+  <i class="hdr__bar" id="progress" aria-hidden="true"></i>
+</header>
+
+<div class="menu" id="menu" inert>
+  <nav class="menu__nav" id="menuNav" aria-label="Mobile"></nav>
+  <div class="menu__foot">
+    <div class="menu__accent"><span>Accent</span><div class="swrow" data-accents role="radiogroup" aria-label="Accent colour"></div></div>
+    <a class="menu__mail" data-mail></a>
+    <ul class="soc" data-socials></ul>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- =============================== hero =============================== -->
+<section class="hero" id="home" data-spy>
+  <div class="ghost" data-ghost="1" aria-hidden="true"><span data-t="hero.ghost"></span></div>
+
+  <div class="wrap hero__stage">
+    <p class="hero__hi" data-t="hero.hi"></p>
+
+    <div class="hero__block">
+      <h1 class="hero__title" id="heroTitle"></h1>
+
+      <figure class="hero__card hero__card--a"><div class="hero__card-m" data-depth="-.6"><div class="hero__card-in" data-cursor="Hi!"><img id="heroPhotoA" alt="" width="800" height="1000"></div></div></figure>
+      <figure class="hero__card hero__card--b"><div class="hero__card-m" data-depth="1"><div class="hero__card-in" data-cursor="Hi!"><img id="heroPhotoB" alt="" width="800" height="1000"></div></div></figure>
+
+      <div class="hero__tag"><div class="hero__tag-in" data-depth=".5">
+        <span class="bubble" data-t="meta.role"></span>
+        <span class="hero__by"><img id="heroAvatar" alt="" width="48" height="48"><span data-t="meta.fullName"></span></span>
+      </div></div>
+
+      <span class="spark spark--1" aria-hidden="true"><span class="spark__m" data-depth="1.5"><svg class="i"><use href="#i-spark"/></svg></span></span>
+      <span class="spark spark--2" aria-hidden="true"><span class="spark__m" data-depth=".8"><svg class="i"><use href="#i-spark"/></svg></span></span>
+      <span class="spark spark--3" aria-hidden="true"><span class="spark__m" data-depth="-1.2"><svg class="i"><use href="#i-spark"/></svg></span></span>
+      <span class="spark spark--4" aria-hidden="true"><span class="spark__m" data-depth="-.5"><svg class="i"><use href="#i-spark"/></svg></span></span>
+    </div>
+
+    <p class="hero__intro" data-t="hero.intro"></p>
+    <div class="hero__cta" id="heroCta"></div>
+  </div>
+
+  <div class="wrap hero__foot">
+    <p class="status"><i aria-hidden="true"></i><span data-t="meta.availableText"></span></p>
+    <a class="scrollhint" href="#about"><span class="mouse" aria-hidden="true"></span><span>Scroll</span></a>
+    <ul class="soc hero__soc" data-socials></ul>
+  </div>
+</section>
+
+<!-- ============================= ribbons ============================== -->
+<div class="ribbons" aria-hidden="true">
+  <div class="ribbon ribbon--b"><div class="ribbon__track" data-ribbon="1"></div></div>
+  <div class="ribbon ribbon--a"><div class="ribbon__track" data-ribbon="0"></div></div>
+</div>
+
+<!-- ============================== about =============================== -->
+<section class="sec about" id="about" data-spy>
+  <div class="ghost" data-ghost="-1" aria-hidden="true"><span>About</span></div>
+  <div class="wrap about__grid">
+
+    <div class="about__media">
+      <i class="about__disc" data-float="-70" aria-hidden="true"></i>
+      <i class="about__dots" data-float="90" aria-hidden="true"></i>
+      <figure class="about__photo" data-reveal="clip"><img id="aboutPhoto" data-parallax alt="" width="800" height="1000"></figure>
+      <div class="badge" data-reveal="pop" aria-hidden="true">
+        <svg class="badge__ring" viewBox="0 0 100 100">
+          <defs><path id="badgePath" d="M50 50m-38 0a38 38 0 1 1 76 0a38 38 0 1 1-76 0"/></defs>
+          <text><textPath href="#badgePath" textLength="236" id="badgeText"></textPath></text>
+        </svg>
+        <span class="badge__core"><svg class="i"><use href="#i-down"/></svg></span>
+      </div>
+      <p class="about__loc" data-reveal><svg class="i" aria-hidden="true"><use href="#i-pin"/></svg><span data-t="meta.location"></span></p>
+    </div>
+
+    <div class="about__body">
+      <p class="label" data-reveal><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg><span data-t="about.label"></span></p>
+      <h2 class="about__statement" id="aboutStatement" data-words="about.statement"></h2>
+      <p class="about__roles" data-reveal><span data-t="about.rolesLead"></span><span class="rot" id="rot"></span></p>
+      <div class="about__text" id="aboutText" data-reveal></div>
+      <div class="about__langs" id="aboutLangsWrap" data-reveal><span class="minilabel">Languages</span><ul class="chips" id="aboutLangs"></ul></div>
+      <dl class="stats" id="stats"></dl>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================== stack =============================== -->
+<section class="sec stack band" id="stack" data-spy="about">
+  <div class="wrap">
+    <header class="head head--split">
+      <div class="head__main">
+        <p class="label" data-reveal><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg><span data-t="stack.label"></span></p>
+        <h2 class="h2" data-words="stack.title" data-reveal="words"></h2>
+      </div>
+      <div class="head__side" data-reveal>
+        <p class="sub" data-t="stack.note"></p>
+        <div class="pills pilltrack" id="legend" role="group" aria-label="Filter tools by group"><span class="pillind" aria-hidden="true"></span></div>
+      </div>
+    </header>
+    <ul class="tiles" id="tiles"></ul>
+  </div>
+</section>
+
+<!-- ============================= services ============================= -->
+<section class="sec services" id="services" data-spy>
+  <div class="ghost" data-ghost="1" aria-hidden="true"><span>Services</span></div>
+  <div class="wrap services__grid">
+    <div class="services__intro">
+      <p class="label" data-reveal><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg><span data-t="services.label"></span></p>
+      <h2 class="h2" data-words="services.title" data-reveal="words"></h2>
+      <p class="sub" data-t="services.sub" data-reveal></p>
+      <div data-reveal><a class="btn btn--ghost" href="#contact" data-magnetic=".3"><span data-t="services.cta"></span><svg class="i" aria-hidden="true"><use href="#i-ur"/></svg></a></div>
+    </div>
+    <div class="services__cards" id="svcCards"></div>
+  </div>
+
+  <div class="wrap">
+    <div class="process" id="process" data-reveal>
+      <div class="process__top">
+        <span class="tagchip" data-t="process.label"></span>
+        <span class="process__count" id="processCount" aria-hidden="true"></span>
+      </div>
+      <div class="process__body" id="processBody" aria-live="polite">
+        <span class="process__num" id="processNum" aria-hidden="true"></span>
+        <div>
+          <h3 class="process__t" id="processTitle"></h3>
+          <p class="process__d" id="processText"></p>
+        </div>
+      </div>
+      <div class="steps" id="steps" role="tablist" aria-label="How I work, step by step"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================== work =============================== -->
+<section class="sec work band band--ink" id="work" data-spy>
+  <div class="ghost" data-ghost="-1" aria-hidden="true"><span>Work</span></div>
+  <div class="wrap">
+    <header class="head head--center">
+      <p class="label" data-reveal><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg><span data-t="work.label"></span></p>
+      <h2 class="h2" data-words="work.title" data-reveal="words"></h2>
+      <p class="sub" data-t="work.sub" data-reveal></p>
+      <div data-reveal><div class="pills pilltrack" id="filters" role="group" aria-label="Filter projects"><span class="pillind" aria-hidden="true"></span></div></div>
+    </header>
+    <div data-reveal><div class="acc" id="acc"></div></div>
+    <p class="work__more" id="workMore" data-reveal></p>
+  </div>
+</section>
+
+<!-- ============================ experience ============================ -->
+<section class="sec xp" id="experience" data-spy>
+  <div class="ghost" data-ghost="1" aria-hidden="true"><span>Journey</span></div>
+  <div class="wrap">
+    <header class="head head--flip">
+      <p class="sub" data-t="experience.sub" data-reveal></p>
+      <div class="head__main">
+        <p class="label" data-reveal><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg><span data-t="experience.label"></span></p>
+        <h2 class="h2" data-words="experience.title" data-reveal="words"></h2>
+      </div>
+    </header>
+    <ol class="xp__list" id="xpList"></ol>
+    <div class="certs" id="certsWrap">
+      <h3 class="certs__h" data-reveal><span data-t="experience.coursesTitle"></span></h3>
+      <div class="certs__grid" id="certs"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== contact ============================= -->
+<section class="sec contact band band--ink" id="contact" data-spy>
+  <canvas class="globe" id="globe" aria-hidden="true"></canvas>
+  <div class="wrap contact__grid">
+    <div class="contact__lead">
+      <p class="label" data-reveal><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg><span data-t="contact.label"></span></p>
+      <h2 class="contact__title" data-words="contact.title" data-reveal="words"></h2>
+      <p class="sub" data-t="contact.sub" data-reveal></p>
+      <div class="mailto" data-reveal>
+        <a class="mailto__a" id="mailA" data-mail></a>
+        <button class="copy" id="copyBtn" type="button"><svg class="i" aria-hidden="true"><use href="#i-copy"/></svg><span>Copy</span></button>
+      </div>
+      <ul class="soc soc--pills" data-socials data-reveal></ul>
+    </div>
+
+    <form class="form" id="contactForm" novalidate data-reveal>
+      <fieldset class="interest">
+        <legend>I'm interested in</legend>
+        <div class="interest__list" id="interestList"></div>
+      </fieldset>
+      <div class="form__two">
+        <div class="field"><input id="cf-name" name="name" type="text" placeholder=" " autocomplete="name" required><label for="cf-name">Your name</label></div>
+        <div class="field"><input id="cf-email" name="email" type="email" placeholder=" " autocomplete="email" required><label for="cf-email">Email address</label></div>
+      </div>
+      <div class="field"><textarea id="cf-message" name="message" rows="4" placeholder=" " required></textarea><label for="cf-message">Tell me about your project</label></div>
+      <div class="form__end">
+        <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+        <button class="btn btn--accent btn--lg" id="formBtn" type="submit" data-magnetic=".25"><span data-t="contact.button"></span><svg class="i" aria-hidden="true"><use href="#i-ur"/></svg></button>
+      </div>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- =============================== footer ============================= -->
+<footer class="ftr">
+  <div class="wrap ftr__top">
+    <p class="ftr__line" data-t="footer.line"></p>
+    <nav class="ftr__nav" id="ftrNav" aria-label="Footer"></nav>
+    <a class="totop" href="#home" data-magnetic=".4" aria-label="Back to top"><svg class="i" aria-hidden="true"><use href="#i-up"/></svg></a>
+  </div>
+  <div class="wrap"><div class="ftr__word" id="ftrWord" aria-hidden="true"></div></div>
+  <div class="wrap ftr__bar">
+    <span id="copyright"></span>
+    <ul class="soc" data-socials></ul>
+  </div>
+</footer>
+
+<!-- floating controls -->
+<div class="accent" id="accent">
+  <div class="accent__list" id="accentList" data-accents role="radiogroup" aria-label="Accent colour"></div>
+  <button class="accent__btn" id="accentBtn" type="button" aria-expanded="false" aria-controls="accentList" aria-label="Change accent colour"><svg class="i" aria-hidden="true"><use href="#i-palette"/></svg></button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="js/content.js"></script>
+<script src="js/main.js"></script>
+<!--/page-->
+</body>
+</html>
