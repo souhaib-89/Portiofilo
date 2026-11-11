@@ -746,6 +746,18 @@ main, .ftr { position: relative; z-index: 1; }
 }
 
 @media (max-width: 44rem) {
+  /* a slimmer header bar on phones */
+  :root { --hdr-h: 3.5rem; }
+  .logo { font-size: .92rem; }
+  .hdr__in { gap: .5rem; }
+  .hdr__act { gap: .35rem; }
+  .iconbtn, .burger { width: 2.2rem; height: 2.2rem; }
+  .iconbtn .i { width: 1rem; height: 1rem; }
+  .burger i { width: .9rem; margin-left: -.45rem; }
+  .hello { width: 5.25rem; height: 1.8rem; font-size: .74rem; }
+  .menu { clip-path: circle(0 at calc(100% - 2.1rem) 1.75rem); }
+  .menu.is-open { clip-path: circle(150% at calc(100% - 2.1rem) 1.75rem); }
+  .menu__a { font-size: clamp(1.5rem, 7.4vw, 2.4rem); }
   .hero__stage { padding-block: 5.25rem 1.5rem; }
   .hero__block { margin-bottom: 7.25rem; }
   .hero__card { width: 5rem; }
