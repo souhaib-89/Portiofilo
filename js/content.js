@@ -97,6 +97,22 @@ window.PORTFOLIO = {
     ]
   },
 
+  /* ------------------------------------------------------------------ skills */
+  /* icon: "figma", "ps", "ai", "code", or leave it out to show the first letters of the name.
+     level: 0 to 100, shown as the bar and the percentage. */
+  skills: {
+    label: "My skills",
+    title: "Design skills that *bring ideas to life*",
+    sub: "I use modern tools and creative thinking to design user-friendly and visually stunning digital products.",
+    cta: "Explore services",
+    items: [
+      { name: "Figma",             area: "UI/UX Design",    level: 95, icon: "figma" },
+      { name: "Adobe Photoshop",   area: "Visual Design",   level: 90, icon: "ps" },
+      { name: "Adobe Illustrator", area: "Graphics",        level: 85, icon: "ai" },
+      { name: "HTML & CSS",        area: "Web Development", level: 80, icon: "code" }
+    ]
+  },
+
   /* ------------------------------------------------------------------- stack */
   stack: {
     label: "Toolbox",

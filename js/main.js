@@ -127,6 +127,23 @@
     $('#aboutLangs').innerHTML = langs.map((l) => `<li class="chip">${esc(l)}</li>`).join('');
     $('#aboutLangsWrap').hidden = !langs.length;
 
+    /* skills */
+    const SKILL_ICONS = {
+      figma: '<svg viewBox="0 0 38 57" aria-hidden="true"><path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z"/><path fill="#0acf83" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 0 1-19 0z"/><path fill="#ff7262" d="M19 0v19h9.5a9.5 9.5 0 0 0 0-19H19z"/><path fill="#f24e1e" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z"/><path fill="#a259ff" d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z"/></svg>',
+      ps: '<span class="skill__app" style="--app-bg:#001e36;--app-fg:#31a8ff">Ps</span>',
+      ai: '<span class="skill__app" style="--app-bg:#330000;--app-fg:#ff9a00">Ai</span>',
+      code: '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14"/></svg>'
+    };
+    $('#skillCards').innerHTML = ((C.skills || {}).items || []).map((k) => {
+      const v = Math.max(0, Math.min(100, +k.level || 0));
+      return `<li data-reveal><article class="skill">
+        <span class="skill__icon">${SKILL_ICONS[k.icon] || `<span class="skill__app">${esc(String(k.name || '').slice(0, 2))}</span>`}</span>
+        <h3 class="skill__name">${esc(k.name)}</h3>
+        <p class="skill__area">${esc(k.area || '')}</p>
+        <div class="skill__meter"><span class="skill__bar" role="img" aria-label="${v} percent"><i style="--v:${v}%"></i></span><span class="skill__pct"><span data-count="${v}">${v}</span>%</span></div>
+      </article></li>`;
+    }).join('');
+
     /* stack */
     const S = C.stack || {};
     $('#legend').insertAdjacentHTML('beforeend', ['All'].concat(S.groups || []).map((g, i) =>
