@@ -857,5 +857,5 @@ main, .ftr { position: relative; z-index: 1; }
 @media (min-width: 56.01rem) {
   [dir="rtl"] .head--flip { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
   [dir="rtl"] .head--flip .head__main { order: -1; justify-items: start; text-align: start; }
-  [dir="rtl"] .head--flip .sub { justify-self: end; text-align: end; }
+  [dir="rtl"] .head--flip .sub { justify-self: end; text-align: start; }
 }
