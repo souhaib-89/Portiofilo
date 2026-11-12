@@ -199,7 +199,8 @@
     { id: 'volt', name: 'Electric blue', hex: '#3d6dff' },
     { id: 'mint', name: 'Mint', hex: '#3df0a2' },
     { id: 'lilac', name: 'Lilac', hex: '#b9a3ff' },
-    { id: 'crimson', name: 'Crimson red', hex: '#ea0116' }
+    { id: 'crimson', name: 'Crimson red', hex: '#ea0116' },
+    { id: 'violet', name: 'Royal violet', hex: '#5523c1' }
   ];
   const INK = [17, 17, 15];
   const PAPER = [246, 245, 241];
@@ -222,6 +223,10 @@
     // a deeper cut of the accent for small text on the light ground
     let d = c.slice();
     for (let k = 0; k < 24 && contrast(d, PAPER) < 4.2; k++) d = d.map((v) => Math.round(v * .94));
+    // and a lighter cut for small text on the dark ground (deep accents such as violet are too dim there)
+    let l = c.slice();
+    for (let k = 0; k < 30 && contrast(l, [14, 14, 13]) < 4.5; k++) l = l.map((v) => Math.round(v + (255 - v) * .08));
+    root.style.setProperty('--accent-lite', `rgb(${l.join(' ')})`);
     root.style.setProperty('--accent', a.hex);
     root.style.setProperty('--accent-ink', ink);
     root.style.setProperty('--accent-deep', `rgb(${d.join(' ')})`);

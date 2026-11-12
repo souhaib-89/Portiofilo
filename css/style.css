@@ -26,7 +26,7 @@
   --fg-3: #85827a;
   --accent: #ffe01b;
   --accent-ink: #11110f;
-  --accent-text: var(--accent);
+  --accent-text: var(--accent-lite, var(--accent));
   --on-img: #f6f4ee;
   --ok: #46d98a;
   --bad: #ff6b5e;
@@ -80,7 +80,7 @@
   --fg: #f4f2ec;
   --fg-2: #b9b6ad;
   --fg-3: #85827a;
-  --accent-text: var(--accent);
+  --accent-text: var(--accent-lite, var(--accent));
   color: var(--fg);
 }
 
