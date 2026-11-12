@@ -198,7 +198,8 @@
     { id: 'ember', name: 'Ember orange', hex: '#ff5a1f' },
     { id: 'volt', name: 'Electric blue', hex: '#3d6dff' },
     { id: 'mint', name: 'Mint', hex: '#3df0a2' },
-    { id: 'lilac', name: 'Lilac', hex: '#b9a3ff' }
+    { id: 'lilac', name: 'Lilac', hex: '#b9a3ff' },
+    { id: 'crimson', name: 'Crimson red', hex: '#ea0116' }
   ];
   const INK = [17, 17, 15];
   const PAPER = [246, 245, 241];
