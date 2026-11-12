@@ -295,11 +295,11 @@ main, .ftr { position: relative; z-index: 1; }
 .menu__a > * { display: inline-block; transform: translateY(120%); transition: transform .8s var(--ease); transition-delay: calc(var(--i) * 55ms + .12s); }
 .menu.is-open .menu__a > * { transform: none; }
 .menu__a.is-current { color: var(--accent-text); }
-.menu__foot { display: grid; gap: .9rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
+.menu__foot { display: grid; grid-template-columns: minmax(0, 1fr); gap: .9rem; padding-top: 1.25rem; border-top: 1px solid var(--line); }
 .menu__mail { font-size: 1.1rem; overflow-wrap: anywhere; }
-.menu__accent { display: flex; align-items: center; gap: 1rem; font: 400 .68rem/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-3); }
-.swrow { display: flex; gap: .7rem; }
-.swrow .sw { width: 1.9rem; height: 1.9rem; }
+.menu__accent { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1rem; min-width: 0; font: 400 .68rem/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg-3); }
+.swrow { display: flex; flex-wrap: wrap; gap: .6rem; min-width: 0; }
+.swrow .sw { width: 1.75rem; height: 1.75rem; }
 .swrow .sw[aria-checked="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--fg); }
 
 /* -------------------------------------------------------------------- 5 hero */
