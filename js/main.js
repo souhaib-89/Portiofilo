@@ -201,7 +201,8 @@
     { id: 'lilac', name: 'Lilac', hex: '#b9a3ff' },
     { id: 'crimson', name: 'Crimson red', hex: '#ea0116' },
     { id: 'violet', name: 'Royal violet', hex: '#5523c1' },
-    { id: 'lime', name: 'Acid lime', hex: '#b3f204' }
+    { id: 'lime', name: 'Acid lime', hex: '#b3f204' },
+    { id: 'forest', name: 'Forest green', hex: '#16654b' }
   ];
   const INK = [17, 17, 15];
   const PAPER = [246, 245, 241];
