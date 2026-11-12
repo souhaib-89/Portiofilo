@@ -286,5 +286,20 @@ window.PORTFOLIO = {
 
   footer: {
     line: "Design that simplifies complexity."
+  },
+
+  /* fixed interface text. The Arabic versions are in js/content.ar.js */
+  ui: {
+    skip: "Skip to content", talk: "Let's talk", resume: "Resume", scroll: "Scroll", all: "All", step: "Step ",
+    languages: "Languages", ghostAbout: "About", ghostServices: "Services", ghostWork: "Work", ghostJourney: "Journey",
+    location: "Location", type: "Type", show: "Show", hide: "Hide", focus: "Focus", details: "Details",
+    readDetails: "Read details", noProjects: "New projects are on their way.", moreWork: "More work", project: "Project",
+    whatIDid: "What I did", previous: "Previous", next: "Next", copy: "Copy", copied: "Copied", selected: "Selected",
+    interestedIn: "I'm interested in", yourName: "Your name", yourEmail: "Email address", yourMessage: "Tell me about your project",
+    formInvalid: "Add your name, a valid email and a short message, then send again.", formSending: "Sending…",
+    formSent: "Thank you. Your message is on its way.", formFailed: "That did not send. Please email", formMailApp: "Your email app should open with the message ready. If it does not, write to",
+    rights: "All rights reserved.", portrait: "Portrait of", accent: "Accent", language: "Language",
+    toLight: "Switch to light mode", toDark: "Switch to dark mode", openMenu: "Open menu", closeMenu: "Close menu",
+    closeDetails: "Close project details", backToTop: "Back to top"
   }
 };

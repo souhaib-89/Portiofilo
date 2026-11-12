@@ -34,6 +34,10 @@ Everything else on the page comes from **`js/content.js`**. Change the text betw
 - Links left empty (`""`) show as inactive placeholders while `meta.draft` is `true`, and disappear when it is `false`.
 - The page title and description that search engines show are in the `<head>` of `index.html`.
 
+## Arabic version
+
+The header has a language switch (ع / EN). Arabic text lives in **`js/content.ar.js`**: anything written there replaces the matching English entry in `js/content.js`, and anything left out (images, links, email) comes from the English file. Projects are translated by their id under `work.translations`; a project without an entry there is shown in English. The choice is remembered in the visitor's browser, and the page switches to right-to-left with the Alexandria and IBM Plex Sans Arabic typefaces.
+
 ## Run it locally
 
 ```bash

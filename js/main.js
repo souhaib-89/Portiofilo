@@ -8,7 +8,21 @@
   'use strict';
 
   const root = document.documentElement;
-  const C = window.PORTFOLIO;
+  /* language: English by default; Arabic text from content.ar.js is laid over the English content */
+  let LANG = 'en';
+  try { if (localStorage.getItem('pf-lang') === 'ar') LANG = 'ar'; } catch (e) { /* no storage: English */ }
+  const overlay = (base, over) => {
+    if (over == null) return base;
+    if (Array.isArray(over) || typeof over !== 'object' || base == null || typeof base !== 'object' || Array.isArray(base)) return over;
+    const out = Object.assign({}, base);
+    Object.keys(over).forEach((k) => { out[k] = overlay(base[k], over[k]); });
+    return out;
+  };
+  const AR = LANG === 'ar' && window.PORTFOLIO_AR;
+  if (!AR) LANG = 'en';
+  const C = AR ? overlay(window.PORTFOLIO, AR) : window.PORTFOLIO;
+  const T = (k) => ((C && C.ui) || {})[k] || k;
+  root.lang = LANG; root.dir = LANG === 'ar' ? 'rtl' : 'ltr';
   if (!C) { root.classList.remove('pre'); return; }
 
   /* ---------------------------------------------------------------- helpers */
@@ -78,7 +92,7 @@
     const cta = $('#hdrCta');
     if (M.resumeUrl) {
       cta.href = M.resumeUrl; cta.target = '_blank'; cta.rel = 'noopener';
-      $('span', cta).textContent = 'Resume';
+      $('span', cta).textContent = T('resume');
     }
 
     $$('[data-socials]').forEach((ul) => {
@@ -101,7 +115,7 @@
       return `<span class="ln">${ws.join(' ')}</span>`;
     }).join(' ');
     const photos = H.photos || [];
-    const alt = `Portrait of ${M.fullName || M.name || ''}`;
+    const alt = `${T('portrait')} ${M.fullName || M.name || ''}`;
     [['#heroPhotoA', photos[0]], ['#heroPhotoB', photos[1] || photos[0]], ['#heroAvatar', photos[0]]].forEach(([sel, src], i) => {
       const img = $(sel); if (!img || !src) return;
       img.src = src; img.alt = i < 2 ? alt : '';
@@ -146,7 +160,7 @@
 
     /* stack */
     const S = C.stack || {};
-    $('#legend').insertAdjacentHTML('beforeend', ['All'].concat(S.groups || []).map((g, i) =>
+    $('#legend').insertAdjacentHTML('beforeend', [T('all')].concat(S.groups || []).map((g, i) =>
       `<button class="pill" type="button" data-group="${i ? esc(g) : ''}" aria-pressed="${!i}">${esc(g)}</button>`).join(''));
     $('#tiles').innerHTML = (S.items || []).map((t, i) =>
       `<li data-reveal><div class="tile" tabindex="0" data-group="${esc(t.group)}"><span class="tile__n"><span>${pad(i + 1)}</span></span><span class="tile__sym" aria-hidden="true">${esc(t.sym)}</span><span><span class="tile__name">${esc(t.name)}</span><span class="tile__g">${esc(t.group)}</span></span></div></li>`).join('');
@@ -155,7 +169,7 @@
     $('#svcCards').innerHTML = ((C.services || {}).items || []).map((s, i) =>
       `<div data-reveal><article class="svc${i === 0 ? ' is-active' : ''}" tabindex="0"><i class="svc__rule"></i><h3 class="svc__t">${esc(s.title)}</h3><p class="svc__d">${esc(s.text)}</p><div class="svc__foot"><p class="svc__tags">${(s.tags || []).map(esc).join(' · ')}</p><span class="svc__go">${icon('ur')}</span></div></article></div>`).join('');
     $('#steps').innerHTML = ((C.process || {}).steps || []).map((s, i) =>
-      `<button class="step" type="button" role="tab" aria-selected="false" data-i="${i}" aria-label="Step ${i + 1}: ${esc(s.title)}"><span class="step__w">Step </span>${pad(i + 1)}</button>`).join('');
+      `<button class="step" type="button" role="tab" aria-selected="false" data-i="${i}" aria-label="${esc(T('step'))}${i + 1}: ${esc(s.title)}"><span class="step__w">${esc(T('step'))}</span>${pad(i + 1)}</button>`).join('');
 
     /* experience */
     $('#xpList').innerHTML = ((C.experience || {}).items || []).map((x, i) => `
@@ -163,14 +177,14 @@
         <button class="xp__head" type="button" aria-expanded="${i === 0}" aria-controls="xp-${i}">
           <span class="xp__n">${pad(i + 1)}</span>
           <span class="xp__cell"><small>${esc(x.period)}</small><b>${esc(x.role)}</b></span>
-          <span class="xp__cell xp__cell--where"><small>Location</small><b>${icon('pin')}${esc(x.place)}</b></span>
-          <span class="xp__cell xp__cell--type"><small>Type</small><b>${esc(x.type)}</b></span>
-          <span class="xp__toggle"><span class="xp__tl">${i === 0 ? 'Hide' : 'Show'}</span>${icon('chev')}</span>
+          <span class="xp__cell xp__cell--where"><small>${esc(T('location'))}</small><b>${icon('pin')}${esc(x.place)}</b></span>
+          <span class="xp__cell xp__cell--type"><small>${esc(T('type'))}</small><b>${esc(x.type)}</b></span>
+          <span class="xp__toggle"><span class="xp__tl">${esc(T(i === 0 ? 'hide' : 'show'))}</span>${icon('chev')}</span>
         </button>
         <div class="xp__panel" id="xp-${i}"><div class="xp__in"><div class="xp__grid">
           <span></span>
-          <div><small>Focus</small><ul class="chips">${(x.stack || []).map((t) => `<li class="chip">${esc(t)}</li>`).join('')}</ul></div>
-          <div><small>Details</small><p>${esc(x.text)}</p><ul class="ticks">${(x.points || []).map((p) => `<li>${icon('spark')}<span>${esc(p)}</span></li>`).join('')}</ul></div>
+          <div><small>${esc(T('focus'))}</small><ul class="chips">${(x.stack || []).map((t) => `<li class="chip">${esc(t)}</li>`).join('')}</ul></div>
+          <div><small>${esc(T('details'))}</small><p>${esc(x.text)}</p><ul class="ticks">${(x.points || []).map((p) => `<li>${icon('spark')}<span>${esc(p)}</span></li>`).join('')}</ul></div>
         </div></div></div>
       </div></li>`).join('');
 
@@ -188,8 +202,15 @@
     /* contact + footer */
     $('#interestList').innerHTML = ((C.contact || {}).interests || []).map((t, i) =>
       `<label><input type="checkbox" id="cf-int-${i}" name="interest" value="${esc(t)}"><span>${esc(t)}</span></label>`).join('');
-    $('#ftrWord').innerHTML = `<span class="ftr__w">${Array.from(String(M.name || '')).map((ch) => `<span>${esc(ch)}</span>`).join('')}</span>`;
-    $('#copyright').textContent = `© ${new Date().getFullYear()} ${M.fullName || M.name || ''}. All rights reserved.`;
+    // Arabic letters join, so the wordmark stays one piece there instead of one span per letter
+    $('#ftrWord').innerHTML = `<span class="ftr__w">${(LANG === 'ar' ? [String(M.name || '')] : Array.from(String(M.name || ''))).map((ch) => `<span>${esc(ch)}</span>`).join('')}</span>`;
+    $('#copyright').textContent = `© ${new Date().getFullYear()} ${M.fullName || M.name || ''}. ${T('rights')}`;
+    if (M.title) document.title = M.title;
+    $$('[data-lang-label]').forEach((el) => { el.textContent = LANG === 'ar' ? 'EN' : 'ع'; });
+    $$('[data-lang-name]').forEach((el) => { el.textContent = LANG === 'ar' ? 'English' : 'العربية'; });
+    $$('[data-lang-toggle]').forEach((b) => { if (b.hasAttribute('aria-label')) b.setAttribute('aria-label', LANG === 'ar' ? 'English' : 'العربية'); });
+    $('#sheetClose').setAttribute('aria-label', T('closeDetails'));
+    $$('.logo, .totop').forEach((el) => el.setAttribute('aria-label', T('backToTop')));
   }
 
   /* ========================================================= colour system */
@@ -242,7 +263,7 @@
       root.dataset.mode = next;
       store.set('pf-mode', next);
       const tc = $('meta[name="theme-color"]'); if (tc) tc.content = next === 'light' ? '#f6f5f1' : '#0e0e0d';
-      $('#modeBtn').setAttribute('aria-label', next === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+      $('#modeBtn').setAttribute('aria-label', T(next === 'light' ? 'toDark' : 'toLight'));
       applyAccent();
     };
     if (!origin || reduce || !document.startViewTransition) { apply(); return; }
@@ -276,7 +297,7 @@
       const r = e.currentTarget.getBoundingClientRect();
       setMode(mode === 'light' ? 'dark' : 'light', { x: r.left + r.width / 2, y: r.top + r.height / 2 });
     });
-    $('#modeBtn').setAttribute('aria-label', mode === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+    $('#modeBtn').setAttribute('aria-label', T(mode === 'light' ? 'toDark' : 'toLight'));
     applyAccent();
 
     // when embedded in a host that sets data-theme, follow it until the visitor picks a mode here
@@ -325,7 +346,7 @@
     menu.classList.toggle('is-open', open);
     menu.inert = !open;
     burger.setAttribute('aria-expanded', String(open));
-    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    burger.setAttribute('aria-label', T(open ? 'closeMenu' : 'openMenu'));
     if (lenis) { if (open) lenis.stop(); else lenis.start(); }
     else document.body.style.overflow = open ? 'hidden' : '';
   }
@@ -375,6 +396,15 @@
     setCurrent('home');
     const spy = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) setCurrent(e.target.dataset.spy || e.target.id); }), { rootMargin: '-45% 0px -54% 0px' });
     $$('[data-spy]').forEach((s) => spy.observe(s));
+  }
+
+  /* ======================================================= language switch */
+  function initLang() {
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('[data-lang-toggle]')) return;
+      store.set('pf-lang', LANG === 'ar' ? 'en' : 'ar');
+      location.reload();   // the page is built once per language
+    });
   }
 
   /* ========================================= greeting in many languages */
@@ -644,6 +674,11 @@
         image: safeImg(x.image), gallery: (Array.isArray(x.gallery) ? x.gallery : []).map(safeImg).filter(Boolean),
         links: (Array.isArray(x.links) ? x.links : []).filter((l) => l && l.label && safeUrl(l.url))
       };
+    }).map((x) => {
+      const tr = ((C.work || {}).translations || {})[x.id];   // only present in the Arabic content
+      if (!tr) return x;
+      const links = x.links.map((l, k) => ({ label: (tr.links || [])[k] || l.label, url: l.url }));
+      return Object.assign({}, x, tr, { id: x.id, links });
     });
   }
 
@@ -675,7 +710,7 @@
     const fbox = $('#filters');
     $$('.pill', fbox).forEach((x) => x.remove());
     fbox.hidden = filters.length < 2;
-    fbox.insertAdjacentHTML('beforeend', ['All'].concat(filters).map((f, i) =>
+    fbox.insertAdjacentHTML('beforeend', [T('all')].concat(filters).map((f, i) =>
       `<button class="pill" type="button" data-filter="${i ? esc(f) : ''}" aria-pressed="${!i}">${esc(f)}</button>`).join(''));
 
     const acc = $('#acc');
@@ -692,12 +727,12 @@
           <p class="acc__desc">${esc(x.text)}</p>
           <ul class="chips">${x.tags.slice(0, 4).map((t) => `<li class="chip">${esc(t)}</li>`).join('')}</ul>
           <div class="acc__links">
-            <a class="btn btn--accent btn--sm" href="#project-${esc(x.id)}"><span>Read details</span>${icon('ur')}</a>
+            <a class="btn btn--accent btn--sm" href="#project-${esc(x.id)}"><span>${esc(T('readDetails'))}</span>${icon('ur')}</a>
             ${x.links.slice(0, 1).map((l) => link(safeUrl(l.url), 'btn btn--onimg btn--sm', `<span>${esc(l.label)}</span>`)).join('')}
           </div>
         </div>
-      </article>`).join('') : '<p class="acc__empty">New projects are on their way.</p>';
-    $('#workMore').innerHTML = link(W.moreUrl, 'lnk', `${esc(W.moreLabel || 'More work')} ${icon('ur')}`);
+      </article>`).join('') : `<p class="acc__empty">${esc(T('noProjects'))}</p>`;
+    $('#workMore').innerHTML = link(W.moreUrl, 'lnk', `${esc(W.moreLabel || T('moreWork'))} ${icon('ur')}`);
   }
 
   function initWork() {
@@ -767,7 +802,7 @@
   function fillSheet(x) {
     const i = PROJECTS.indexOf(x), n = PROJECTS.length;
     const prev = PROJECTS[(i - 1 + n) % n], next = PROJECTS[(i + 1) % n];
-    $('#sheetCount').textContent = `Project ${pad(i + 1)} / ${pad(n)}`;
+    $('#sheetCount').textContent = `${T('project')} ${pad(i + 1)} / ${pad(n)}`;
     $('#sheetBody').innerHTML = `
       <header class="sheet__head">
         <p class="label">${icon('spark')}<span>${[x.category, x.year, x.role].filter(Boolean).map(esc).join(' · ')}</span></p>
@@ -777,11 +812,11 @@
         ${x.links.length ? `<div class="sheet__links">${x.links.map((l, k) => link(safeUrl(l.url), `btn btn--${k ? 'ghost' : 'accent'}`, `<span>${esc(l.label)}</span>${icon('ur')}`)).join('')}</div>` : ''}
       </header>
       ${x.image ? `<figure class="sheet__cover"><img src="${esc(x.image)}" alt="${esc(x.title)}"></figure>` : ''}
-      ${x.body ? `<section class="sheet__text"><h3 class="minilabel">What I did</h3>${rich(x.body)}</section>` : ''}
+      ${x.body ? `<section class="sheet__text"><h3 class="minilabel">${esc(T('whatIDid'))}</h3>${rich(x.body)}</section>` : ''}
       ${x.gallery.length ? `<div class="sheet__gallery">${x.gallery.map((u, k) => `<figure><img src="${esc(u)}" alt="${esc(x.title)}, screen ${k + 1}" loading="lazy"></figure>`).join('')}</div>` : ''}
       ${n > 1 ? `<nav class="sheet__nav" aria-label="More projects">
-        <a class="sheet__go" href="#project-${esc(prev.id)}" data-go="${esc(prev.id)}"><small>Previous</small><b>${esc(prev.title)}</b></a>
-        <a class="sheet__go" href="#project-${esc(next.id)}" data-go="${esc(next.id)}"><small>Next</small><b>${esc(next.title)}</b></a>
+        <a class="sheet__go" href="#project-${esc(prev.id)}" data-go="${esc(prev.id)}"><small>${esc(T('previous'))}</small><b>${esc(prev.title)}</b></a>
+        <a class="sheet__go" href="#project-${esc(next.id)}" data-go="${esc(next.id)}"><small>${esc(T('next'))}</small><b>${esc(next.title)}</b></a>
       </nav>` : ''}`;
     $('#sheetPanel').scrollTop = 0;
   }
@@ -850,7 +885,7 @@
     const set = (row, open) => {
       row.classList.toggle('is-open', open);
       $('.xp__head', row).setAttribute('aria-expanded', String(open));
-      $('.xp__tl', row).textContent = open ? 'Hide' : 'Show';
+      $('.xp__tl', row).textContent = T(open ? 'hide' : 'show');
     };
     list.addEventListener('click', (e) => {
       const head = e.target.closest('.xp__head'); if (!head) return;
@@ -867,8 +902,8 @@
     // copy the email address
     const copy = $('#copyBtn');
     if (copy) copy.addEventListener('click', () => {
-      const done = () => { copy.classList.add('is-done'); $('span', copy).textContent = 'Copied'; $('use', copy).setAttribute('href', '#i-check'); setTimeout(() => { copy.classList.remove('is-done'); $('span', copy).textContent = 'Copy'; $('use', copy).setAttribute('href', '#i-copy'); }, 1800); };
-      const fallback = () => { const r = document.createRange(); r.selectNodeContents($('#mailA')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $('span', copy).textContent = 'Selected'; };
+      const done = () => { copy.classList.add('is-done'); $('span', copy).textContent = T('copied'); $('use', copy).setAttribute('href', '#i-check'); setTimeout(() => { copy.classList.remove('is-done'); $('span', copy).textContent = T('copy'); $('use', copy).setAttribute('href', '#i-copy'); }, 1800); };
+      const fallback = () => { const r = document.createRange(); r.selectNodeContents($('#mailA')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $('span', copy).textContent = T('selected'); };
       if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(M.email || '').then(done).catch(fallback);
       else fallback();
     });
@@ -886,26 +921,26 @@
         f.parentElement.classList.toggle('is-bad', !ok);
         return !ok;
       });
-      if (bad.length) { say('Add your name, a valid email and a short message, then send again.', 'err'); bad[0].focus(); return; }
+      if (bad.length) { say(T('formInvalid'), 'err'); bad[0].focus(); return; }
 
       const picks = $$('input[name="interest"]:checked', form).map((c) => c.value);
       if (M.formEndpoint) {
-        btn.disabled = true; say('Sending…');
+        btn.disabled = true; say(T('formSending'));
         try {
           const data = new FormData(form);
           if (M.formKey) data.append('access_key', M.formKey);          // Web3Forms expects its key in the body
           const res = await fetch(M.formEndpoint, { method: 'POST', headers: { Accept: 'application/json' }, body: data });
           if (!res.ok) throw new Error(String(res.status));
-          say(`Thanks, ${name.value.trim()}. Your message is on its way.`, 'ok');
+          say(T('formSent'), 'ok');
           form.reset();
         } catch (err) {
-          say(`That did not send. Please email ${M.email} instead.`, 'err');
+          say(`${T('formFailed')} ${M.email}`, 'err');
         } finally { btn.disabled = false; }
       } else {
         // no form service connected: hand the message to the visitor's own email app
         const body = `${msg.value.trim()}\n\n${picks.length ? `Interested in: ${picks.join(', ')}\n` : ''}From: ${name.value.trim()} <${email.value.trim()}>`;
         location.href = `mailto:${M.email || ''}?subject=${encodeURIComponent(`Project enquiry from ${name.value.trim()}`)}&body=${encodeURIComponent(body)}`;
-        say(`Your email app should open with the message ready. If it does not, write to ${M.email}.`);
+        say(`${T('formMailApp')} ${M.email}`);
       }
     });
   }
@@ -1087,6 +1122,7 @@
   initScroll();
   initHeader();
   initHello();
+  initLang();
   initReveal();
   initHero();
   initScrollMotion();
