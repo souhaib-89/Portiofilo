@@ -398,6 +398,80 @@
     $$('[data-spy]').forEach((s) => spy.observe(s));
   }
 
+  /* ================================================================== chat */
+  /* Questions go to /api/chat (Claude, answering from the CV). If that service is not
+     connected, the answers below are put together from the site's own content instead. */
+  function localAnswer(q) {
+    const s = q.toLowerCase(), M = C.meta || {}, has = (re) => re.test(s);
+    const list = (a) => a.filter(Boolean).join(LANG === 'ar' ? '، ' : ', ');
+    const socials = (C.socials || []).filter((x) => x.url).map((x) => `${x.label}: ${x.url}`).join('\n');
+    if (has(/contact|email|mail|reach|hire|phone|whats|linkedin|behance|تواصل|ايميل|إيميل|بريد|رقم|واتس|اوظف|توظيف|أتواصل|اتواصل/)) return `${T('aContact')} ${M.email}\n${T('aAlso')}\n${socials}`;
+    if (has(/project|work on|portfolio|case stud|مشاريع|مشروع|أعمال|اعمال|شغل ايه|اشتغل/)) return `${T('aProjects')}\n${PROJECTS.map((x) => `• ${x.title}${x.year ? ` (${x.year})` : ''}`).join('\n')}`;
+    if (has(/skill|tool|stack|figma|software|مهار|أدوات|ادوات|برامج|يستخدم/)) return `${T('aSkills')}\n${list(((C.skills || {}).items || []).map((x) => x.name).concat(((C.stack || {}).items || []).slice(0, 13).map((x) => x.name)))}`;
+    if (has(/experience|job|career|company|broker|freelanc|خبر|وظيف|شركة|شركات|فريلانس|عمل حر/)) return `${T('aExperience')}\n${((C.experience || {}).items || []).map((x) => `• ${x.role} (${x.period})`).join('\n')}`;
+    if (has(/course|certif|study|educat|degree|universit|دور|شهاد|دراس|تعليم|جامع|كورس/)) return `${T('aCourses')}\n${((C.experience || {}).courses || []).map((x) => `• ${x.title} · ${x.by}`).join('\n')}`;
+    if (has(/language|speak|لغ|يتكلم|يتحدث/)) return `${T('aLanguages')} ${list((C.about || {}).languages || [])}`;
+    if (has(/who|what does|about|role|do\b|مين|من هو|عمله|بيشتغل|يعمل|نبذة|عن/)) return `${M.fullName} ${T('aRole')} ${M.role}، ${T('aBased')} ${M.location}.\n${((C.about || {}).text || [])[0] || ''}`.replace('،', LANG === 'ar' ? '،' : ',');
+    return T('aDefault');
+  }
+
+  function initChat() {
+    const box = $('#chat'); if (!box) return;
+    const panel = $('#chatPanel'), log = $('#chatLog'), form = $('#chatForm'), input = $('#chatInput'), sendBtn = $('#chatSend'), btn = $('#chatBtn'), chips = $('#chatChips');
+    const history = [];
+    let busy = false, online = !window.PF_STATIC && location.protocol !== 'file:', greeted = false;
+    btn.setAttribute('aria-label', T('chatOpen')); $('#chatClose').setAttribute('aria-label', T('chatClose'));
+    input.placeholder = T('chatPlaceholder'); input.setAttribute('aria-label', T('chatPlaceholder')); sendBtn.setAttribute('aria-label', T('chatSend'));
+
+    const linkify = (text) => esc(text).replace(/(https?:\/\/[^\s<]+[^\s<.,;:!?)\]}،؛])/g, '<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/([\w.+-]+@[\w-]+\.[\w.-]+)/g, '<a href="mailto:$1">$1</a>');
+    const add = (text, who) => {
+      const el = document.createElement('div');
+      el.className = `msg msg--${who}`; el.dir = 'auto';
+      el.innerHTML = linkify(text);
+      log.appendChild(el); log.scrollTop = log.scrollHeight;
+      return el;
+    };
+    const open = (v) => {
+      box.classList.toggle('is-open', v); panel.inert = !v; btn.setAttribute('aria-expanded', String(v));
+      if (!v) return;
+      if (!greeted) {
+        greeted = true; add(T('chatHello'), 'bot');
+        chips.innerHTML = (Array.isArray(T('chatSuggest')) ? T('chatSuggest') : []).map((q) => `<button class="chat__chip" type="button">${esc(q)}</button>`).join('');
+      }
+      setTimeout(() => input.focus({ preventScroll: true }), 80);
+    };
+
+    async function ask(q) {
+      q = q.trim(); if (!q || busy) return;
+      busy = true; sendBtn.disabled = true; chips.innerHTML = '';
+      add(q, 'me'); history.push({ role: 'user', content: q });
+      const wait = document.createElement('div');
+      wait.className = 'msg msg--bot msg--wait'; wait.innerHTML = '<i></i><i></i><i></i>';
+      log.appendChild(wait); log.scrollTop = log.scrollHeight;
+      let reply = '';
+      if (online) {
+        try {
+          const r = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history.slice(-12) }) });
+          const d = await r.json().catch(() => ({}));
+          if (r.ok) reply = d.refused ? T('chatOut') : (d.reply || '');
+          else if (r.status === 429) reply = T('chatBusy');
+          else if (r.status === 503 || r.status === 404) online = false;      // not connected: use the built-in answers from now on
+          else reply = `${T('chatFail')} ${(C.meta || {}).email}`;
+        } catch (e) { reply = `${T('chatFail')} ${(C.meta || {}).email}`; }
+      }
+      if (!reply) { await new Promise((ok) => setTimeout(ok, 450)); reply = localAnswer(q); }
+      wait.remove();
+      add(reply, 'bot'); history.push({ role: 'assistant', content: reply });
+      busy = false; sendBtn.disabled = false; input.focus({ preventScroll: true });
+    }
+
+    btn.addEventListener('click', () => open(!box.classList.contains('is-open')));
+    $('#chatClose').addEventListener('click', () => { open(false); btn.focus(); });
+    form.addEventListener('submit', (e) => { e.preventDefault(); const q = input.value; input.value = ''; ask(q); });
+    chips.addEventListener('click', (e) => { const c = e.target.closest('.chat__chip'); if (c) ask(c.textContent); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && box.classList.contains('is-open') && !sheetOpen) open(false); });
+  }
+
   /* ======================================================= language switch */
   function initLang() {
     document.addEventListener('click', (e) => {
@@ -835,7 +909,7 @@
     sheetFocus = document.activeElement;
     sheet.inert = false;
     sheet.classList.add('is-open');
-    $$('#hdr, #main, .ftr, #accent').forEach((el) => { el.inert = true; });
+    $$('#hdr, #main, .ftr, #accent, #chat').forEach((el) => { el.inert = true; });
     if (lenis) lenis.stop(); else root.style.overflow = 'hidden';
     $('#sheetClose').focus({ preventScroll: true });
   }
@@ -845,7 +919,7 @@
     sheetOpen = false; sheetPushed = false;
     sheet.classList.remove('is-open');
     sheet.inert = true;
-    $$('#hdr, #main, .ftr, #accent').forEach((el) => { el.inert = false; });
+    $$('#hdr, #main, .ftr, #accent, #chat').forEach((el) => { el.inert = false; });
     if (lenis) lenis.start(); else root.style.overflow = '';
     if (sheetFocus && sheetFocus.focus) sheetFocus.focus({ preventScroll: true });
   }
@@ -1130,6 +1204,7 @@
   initHeader();
   initHello();
   initLang();
+  initChat();
   initReveal();
   initHero();
   initScrollMotion();

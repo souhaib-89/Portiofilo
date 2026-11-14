@@ -300,6 +300,16 @@ window.PORTFOLIO = {
     formSent: "Thank you. Your message is on its way.", formFailed: "That did not send. Please email", formMailApp: "Your email app should open with the message ready. If it does not, write to",
     rights: "All rights reserved.", portrait: "Portrait of", accent: "Accent", language: "Language",
     toLight: "Switch to light mode", toDark: "Switch to dark mode", openMenu: "Open menu", closeMenu: "Close menu",
-    closeDetails: "Close project details", backToTop: "Back to top"
+    closeDetails: "Close project details", backToTop: "Back to top",
+    chatOpen: "Ask about Souhaib", chatClose: "Close chat", chatTitle: "Ask about Souhaib", chatSub: "Answers from his CV",
+    chatHello: "Hi! Ask me anything about Souhaib: his experience, projects, skills or how to reach him.",
+    chatPlaceholder: "Type your question…", chatSend: "Send",
+    chatSuggest: ["What does he do?", "What projects has he worked on?", "What tools does he use?", "How can I contact him?"],
+    chatBusy: "Too many questions in a short time. Try again in a few minutes.",
+    chatFail: "I could not answer just now. You can reach Souhaib at",
+    chatOut: "I can only answer questions about Souhaib and his work.",
+    aRole: "is a", aBased: "based in", aSkills: "His main skills and tools:", aProjects: "His projects:", aExperience: "His experience:",
+    aCourses: "Courses and certificates:", aLanguages: "He speaks:", aContact: "You can reach him at", aAlso: "Also on:",
+    aDefault: "You can ask me about his experience, projects, skills, courses or contact details."
   }
 };

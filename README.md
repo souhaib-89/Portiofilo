@@ -34,6 +34,15 @@ Everything else on the page comes from **`js/content.js`**. Change the text betw
 - Links left empty (`""`) show as inactive placeholders while `meta.draft` is `true`, and disappear when it is `false`.
 - The page title and description that search engines show are in the `<head>` of `index.html`.
 
+## Chat assistant
+
+The chat button in the corner answers visitors' questions about Souhaib, in English or Arabic.
+
+- **With an API key**: add `ANTHROPIC_API_KEY` in Vercel (Settings → Environment Variables) and redeploy. Questions then go to `api/chat.js`, which asks Claude to answer from the CV text in `api/_lib/cv.js`. Each answer costs a small amount on that Anthropic account, so set a monthly spend limit in the Anthropic Console. `CHAT_MODEL` (optional) picks a different model.
+- **Without a key**: the chat still works, with ready-made answers built from the site's own content (about, projects, skills, experience, courses, languages, contact).
+
+Update `api/_lib/cv.js` when the CV changes.
+
 ## Arabic version
 
 The header has a language switch (ع / EN). Arabic text lives in **`js/content.ar.js`**: anything written there replaces the matching English entry in `js/content.js`, and anything left out (images, links, email) comes from the English file. Each project's Arabic text is typed in the dashboard (the “النسخة العربية” block in the project editor, plus an Arabic label per link); a field left empty there shows the English text. The starter projects take their Arabic from `work.translations` until they are edited. The choice is remembered in the visitor's browser, and the page switches to right-to-left with the Alexandria and IBM Plex Sans Arabic typefaces.
