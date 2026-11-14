@@ -672,13 +672,20 @@
         id, title: String(x.title), category: x.category || '', year: String(x.year || ''), role: x.role || '',
         text: x.text || '', body: x.body || '', tags: Array.isArray(x.tags) ? x.tags : [],
         image: safeImg(x.image), gallery: (Array.isArray(x.gallery) ? x.gallery : []).map(safeImg).filter(Boolean),
-        links: (Array.isArray(x.links) ? x.links : []).filter((l) => l && l.label && safeUrl(l.url))
+        links: (Array.isArray(x.links) ? x.links : []).filter((l) => l && l.label && safeUrl(l.url)),
+        ar: x.ar && typeof x.ar === 'object' ? x.ar : null
       };
     }).map((x) => {
-      const tr = ((C.work || {}).translations || {})[x.id];   // only present in the Arabic content
-      if (!tr) return x;
-      const links = x.links.map((l, k) => ({ label: (tr.links || [])[k] || l.label, url: l.url }));
-      return Object.assign({}, x, tr, { id: x.id, links });
+      if (LANG !== 'ar') return x;
+      // Arabic text: what was typed in the dashboard first, then the built-in translation for that project
+      const tr = ((C.work || {}).translations || {})[x.id] || {};
+      const a = x.ar || {};
+      const pick = (k) => (a[k] && String(a[k]).trim()) || tr[k] || x[k];
+      return Object.assign({}, x, {
+        title: pick('title'), category: pick('category'), role: pick('role'), text: pick('text'), body: pick('body'),
+        tags: (Array.isArray(a.tags) && a.tags.length ? a.tags : tr.tags) || x.tags,
+        links: x.links.map((l, k) => ({ label: l.labelAr || (tr.links || [])[k] || l.label, url: l.url }))
+      });
     });
   }
 

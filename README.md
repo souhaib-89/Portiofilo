@@ -36,7 +36,7 @@ Everything else on the page comes from **`js/content.js`**. Change the text betw
 
 ## Arabic version
 
-The header has a language switch (ع / EN). Arabic text lives in **`js/content.ar.js`**: anything written there replaces the matching English entry in `js/content.js`, and anything left out (images, links, email) comes from the English file. Projects are translated by their id under `work.translations`; a project without an entry there is shown in English. The choice is remembered in the visitor's browser, and the page switches to right-to-left with the Alexandria and IBM Plex Sans Arabic typefaces.
+The header has a language switch (ع / EN). Arabic text lives in **`js/content.ar.js`**: anything written there replaces the matching English entry in `js/content.js`, and anything left out (images, links, email) comes from the English file. Each project's Arabic text is typed in the dashboard (the “النسخة العربية” block in the project editor, plus an Arabic label per link); a field left empty there shows the English text. The starter projects take their Arabic from `work.translations` until they are edited. The choice is remembered in the visitor's browser, and the page switches to right-to-left with the Alexandria and IBM Plex Sans Arabic typefaces.
 
 ## Run it locally
 

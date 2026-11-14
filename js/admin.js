@@ -108,9 +108,22 @@
         id, title: String(p.title), category: p.category || '', year: String(p.year || ''), role: p.role || '',
         text: p.text || '', body: p.body || '', tags: Array.isArray(p.tags) ? p.tags.slice() : [],
         image: p.image || '', gallery: Array.isArray(p.gallery) ? p.gallery.slice() : [],
-        links: (Array.isArray(p.links) ? p.links : []).map((l) => ({ label: (l && l.label) || '', url: (l && l.url) || '' }))
+        links: (Array.isArray(p.links) ? p.links : []).map((l, k) => ({ label: (l && l.label) || '', labelAr: (l && l.labelAr) || (starter(id).links || [])[k] || '', url: (l && l.url) || '' })),
+        ar: arabic(p.ar, starter(id))
       };
     });
+  }
+
+  /* Arabic text of a project. A project that has none yet starts from the translation that ships
+     with the site (js/content.ar.js), so saving the starter projects keeps their Arabic. */
+  const starter = (id) => ((((window.PORTFOLIO_AR || {}).work || {}).translations || {})[id]) || {};
+  function arabic(a, base) {
+    a = a && typeof a === 'object' ? a : {};
+    const pick = (k) => a[k] || base[k] || '';
+    return {
+      title: pick('title'), category: pick('category'), role: pick('role'), text: pick('text'), body: pick('body'),
+      tags: (Array.isArray(a.tags) && a.tags.length ? a.tags : Array.isArray(base.tags) ? base.tags : []).slice()
+    };
   }
 
   async function loadApp() {
@@ -217,12 +230,13 @@
 
   /* --------------------------------------------------------------- editor */
   const drawer = $('#drawer'), form = $('#form');
+  const FA = { title: $('#f-ar-title'), category: $('#f-ar-category'), role: $('#f-ar-role'), text: $('#f-ar-text'), body: $('#f-ar-body'), tags: $('#f-ar-tags') };
   const F = { title: $('#f-title'), year: $('#f-year'), category: $('#f-category'), role: $('#f-role'), text: $('#f-text'), body: $('#f-body'), tags: $('#f-tags') };
 
   function openEditor(i) {
     editIndex = i;
     const p = i >= 0 ? state.projects[i] : null;
-    draft = p ? JSON.parse(JSON.stringify(p)) : { id: '', title: '', category: '', year: String(new Date().getFullYear()), role: '', text: '', body: '', tags: [], image: '', gallery: [], links: [] };
+    draft = p ? JSON.parse(JSON.stringify(p)) : { id: '', title: '', category: '', year: String(new Date().getFullYear()), role: '', text: '', body: '', tags: [], image: '', gallery: [], links: [], ar: arabic(null, {}) };
     pending = new Set(); uploads = 0;
     $('#formTitle').textContent = p ? 'Edit project' : 'Add project';
     $('#saveBtn').textContent = p ? 'Save changes' : 'Add project';
@@ -230,6 +244,8 @@
     $$('.field', form).forEach((f) => f.classList.remove('is-bad'));
     F.title.value = draft.title; F.year.value = draft.year; F.category.value = draft.category; F.role.value = draft.role;
     F.text.value = draft.text; F.body.value = draft.body; F.tags.value = draft.tags.join(', ');
+    const A = draft.ar || arabic(null, {});
+    FA.title.value = A.title; FA.category.value = A.category; FA.role.value = A.role; FA.text.value = A.text; FA.body.value = A.body; FA.tags.value = A.tags.join('، ');
     renderCover(); renderGallery(); renderLinks();
     drawer.inert = false; drawer.classList.add('is-open');
     $('.drawer__body').scrollTop = 0;
@@ -375,6 +391,7 @@
     $('#links').innerHTML = draft.links.map((l, i) => `
       <div class="link">
         <input type="text" id="f-link-label-${i}" data-link="label" data-i="${i}" value="${esc(l.label)}" placeholder="Button text" maxlength="40" aria-label="Link ${i + 1} button text" autocomplete="off">
+        <input type="text" id="f-link-label-ar-${i}" dir="rtl" lang="ar" data-link="labelAr" data-i="${i}" value="${esc(l.labelAr || '')}" placeholder="نص الزر بالعربية" maxlength="40" aria-label="Link ${i + 1} button text in Arabic" autocomplete="off">
         <input type="url" id="f-link-url-${i}" data-link="url" data-i="${i}" value="${esc(l.url)}" placeholder="https://…" maxlength="600" aria-label="Link ${i + 1} address" autocomplete="off">
         <button class="iconbtn" type="button" data-link="remove" data-i="${i}" aria-label="Remove link ${i + 1}">${icon('x')}</button>
       </div>`).join('');
@@ -390,7 +407,7 @@
   });
   $('#addLink').addEventListener('click', () => {
     if (!draft) return;
-    draft.links.push({ label: draft.links.length ? '' : 'View case study', url: '' });
+    draft.links.push({ label: draft.links.length ? '' : 'View case study', labelAr: draft.links.length ? '' : 'عرض دراسة الحالة', url: '' });
     renderLinks();
     $(`#f-link-url-${draft.links.length - 1}`).focus();
   });
@@ -407,7 +424,7 @@
     const bad = [];
     if (!title) bad.push([F.title, 'Give the project a title.']);
     if (!text) bad.push([F.text, 'Write a short summary for the project card.']);
-    const links = draft.links.map((l) => ({ label: l.label.trim(), url: l.url.trim() })).filter((l) => l.label || l.url);
+    const links = draft.links.map((l) => ({ label: l.label.trim(), labelAr: (l.labelAr || '').trim(), url: l.url.trim() })).filter((l) => l.label || l.url);
     const wrong = links.find((l) => !l.label || !/^(https?:\/\/|mailto:)\S+$/i.test(l.url));
     if (bad.length) {
       bad.forEach(([el]) => el.closest('.field').classList.add('is-bad'));
@@ -419,7 +436,12 @@
       title, text,
       year: F.year.value.trim(), category: F.category.value.trim(), role: F.role.value.trim(), body: F.body.value.trim(),
       tags: F.tags.value.split(',').map((t) => t.trim()).filter(Boolean).slice(0, 12),
-      links
+      links,
+      ar: {
+        title: FA.title.value.trim(), category: FA.category.value.trim(), role: FA.role.value.trim(),
+        text: FA.text.value.trim(), body: FA.body.value.trim(),
+        tags: FA.tags.value.split(/[,،]/).map((t) => t.trim()).filter(Boolean).slice(0, 12)
+      }
     });
     if (editIndex < 0) p.id = '';   // the server derives the address from the title
     const next = state.projects.slice();

@@ -9,7 +9,7 @@
 <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Unbounded:wght@400..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Unbounded:wght@400..900&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
@@ -146,6 +146,20 @@
         <input id="f-tags" type="text" placeholder="SaaS, Dashboards, Usability testing" autocomplete="off">
       </div>
 
+      <fieldset class="group ar" dir="rtl" lang="ar">
+        <legend>النسخة العربية <small>اختياري</small></legend>
+        <p class="hint">تظهر لمن يختار العربية في الموقع. أي حقل تتركه فارغاً يظهر مكانه النص الإنجليزي.</p>
+        <div class="field"><label for="f-ar-title">العنوان</label><input id="f-ar-title" type="text" maxlength="120" autocomplete="off"></div>
+        <div class="grid2">
+          <div class="field"><label for="f-ar-category">التصنيف</label><input id="f-ar-category" type="text" maxlength="60" placeholder="منصة SaaS" autocomplete="off"></div>
+          <div class="field"><label for="f-ar-role">دورك</label><input id="f-ar-role" type="text" maxlength="60" placeholder="مصمم منتجات" autocomplete="off"></div>
+        </div>
+        <div class="field"><label for="f-ar-text">ملخص قصير <small>يظهر على بطاقة المشروع</small></label><textarea id="f-ar-text" rows="3" maxlength="400"></textarea></div>
+        <div class="field"><label for="f-ar-body">التفاصيل <small>تظهر عند فتح المشروع</small></label><textarea id="f-ar-body" rows="7" maxlength="8000"></textarea>
+          <p class="hint">اترك سطراً فارغاً لبدء فقرة جديدة. ابدأ السطر بـ «- » ليصبح نقطة.</p></div>
+        <div class="field"><label for="f-ar-tags">الوسوم <small>افصل بينها بفاصلة</small></label><input id="f-ar-tags" type="text" placeholder="SaaS، لوحات التحكم" autocomplete="off"></div>
+      </fieldset>
+
       <fieldset class="group">
         <legend>Cover image</legend>
         <div class="cover" id="cover"></div>
@@ -160,7 +174,7 @@
       </fieldset>
 
       <fieldset class="group">
-        <legend>Links <small>Figma file, Behance case study, live site…</small></legend>
+        <legend>Links <small>Figma file, Behance case study, live site… The Arabic button text is optional.</small></legend>
         <div class="links" id="links"></div>
         <button class="btn btn--ghost btn--sm" id="addLink" type="button"><svg class="i" aria-hidden="true"><use href="#i-plus"/></svg><span>Add link</span></button>
       </fieldset>
@@ -177,6 +191,7 @@
 <p class="toast" id="toast" role="status" aria-live="polite"></p>
 
 <script src="/js/content.js"></script>
+<script src="/js/content.ar.js"></script>
 <script src="/js/admin.js"></script>
 </body>
 </html>

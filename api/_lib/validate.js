@@ -52,8 +52,22 @@ function project(raw, used) {
     image: imageUrl(raw.image),
     gallery: list(raw.gallery, LIMITS.gallery).map(imageUrl).filter(Boolean),
     links: list(raw.links, LIMITS.links)
-      .map((l) => ({ label: line(l && l.label, 40), url: linkUrl(l && l.url) }))
-      .filter((l) => l.label && l.url)
+      .map((l) => ({ label: line(l && l.label, 40), labelAr: line(l && l.labelAr, 40), url: linkUrl(l && l.url) }))
+      .filter((l) => l.label && l.url),
+    ar: arabic(raw.ar)
+  };
+}
+
+/* optional Arabic text for the same project; empty fields fall back to the English ones on the site */
+function arabic(raw) {
+  const a = raw && typeof raw === 'object' ? raw : {};
+  return {
+    title: line(a.title, 120),
+    category: line(a.category, 60),
+    role: line(a.role, 60),
+    text: text(a.text, 400),
+    body: text(a.body, 8000),
+    tags: (Array.isArray(a.tags) ? a.tags : []).slice(0, LIMITS.tags).map((t) => line(t, 40)).filter(Boolean)
   };
 }
 
